@@ -43,7 +43,7 @@ func handleViewRSS(w http.ResponseWriter, r *http.Request) {
 	//	fmt.Println("super mega test rss", listFlux[RSSId])
 		pD.RSSData = make(map[string]*RSS)
 		pD.RSSData["currentRSS"], _ = fetchRSS(listFlux[RSSId].Link, listFlux[RSSId].Name)
-		
+		fmt.Println(pD.RSSData["currentRSS"].Channel.Items[0])
 		createResponse(w, "rsc/html/viewRSS.html", pD)
 	default:
 		errorHandler(w, r, http.StatusBadRequest)

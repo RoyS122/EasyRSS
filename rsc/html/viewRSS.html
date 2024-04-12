@@ -3,8 +3,17 @@
 {{range .RSSData.currentRSS.Channel.Items}}
     <div>
         <h3>{{.Title}}</h3>
-        <p><b>Description:</b> {{.Description}}</p>
-        <a href="{{.Link}}">{{.Link}}</a>
+        <p><b>Description: </b> {{.Description}}</p>
+        <a href="{{.Link}}"><b>Lien: </b>{{.Link}}</a>
+        {{ if .Enclosure.URL }}
+        <div>
+        <audio controls>
+            <source src="{{.Enclosure.URL}}" type="{{.Enclosure.Type}}">
+            
+            Votre navigateur ne supporte pas la balise audio.
+        </audio>
+        </div>
+        {{end}}
         <p><i>{{.PubDate}}</i></p>
     </div>
 {{end}}
