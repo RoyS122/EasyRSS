@@ -1,0 +1,7 @@
+{{ range $i, $k := .RSSFluxArrays.listFlux }}
+    <div>
+        <a href="/viewRSS/{{$i}}">
+            {{$k.Name}}
+        </a>
+    </div>
+{{ end }}

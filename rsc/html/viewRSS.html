@@ -1,0 +1,10 @@
+<h1>{{.RSSData.currentRSS.Channel.Title}}</h1>
+<p>Description: {{.RSSData.currentRSS.Channel.Description}}</p>
+{{range .RSSData.currentRSS.Channel.Items}}
+    <div>
+        <h3>{{.Title}}</h3>
+        <p><b>Description:</b> {{.Description}}</p>
+        <a href="{{.Link}}">{{.Link}}</a>
+        <p><i>{{.PubDate}}</i></p>
+    </div>
+{{end}}
