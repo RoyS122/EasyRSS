@@ -37,3 +37,9 @@ type Enclosure struct {
 	Length string `xml:"length,attr"`
 	Type   string `xml:"type,attr"`
 }
+
+type Categorie struct {
+	Title       string
+	Description string
+	Color       string
+}

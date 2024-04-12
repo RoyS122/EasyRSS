@@ -33,13 +33,11 @@ func Atoi(str string) (res int) {
 }
 
 func RevertString(in_str string) (res string) {
-
 	for i := len(in_str); i > 0; i-- {
-
 		res += string(in_str[i-1])
 	}
 	return res
-} // This function revert a string
+}
 
 func PowInt(a, b int) (res int) {
 	if b == 0 {
@@ -51,7 +49,7 @@ func PowInt(a, b int) (res int) {
 	}
 
 	return res
-} // This function get a ** b
+}
 
 func removeChar(c rune, s string) (r string) {
 	for _, k := range s {
