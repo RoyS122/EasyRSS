@@ -14,6 +14,9 @@ func main() {
 		"/": handleHome, 	
         "/viewRSS/": handleViewRSS,
         "/addRSS": handleAddRSS,
+		"/addCategorie": handleAddCategorie,
+		"/getAllRSSFeeds": handlegetAllRSSFeeds,
+		"/deleteRSSFeed": handleDeleteRSSFeed,
 	}
 
 	dir, _ := os.Getwd()

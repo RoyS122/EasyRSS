@@ -11,7 +11,7 @@ func writeFile(filename string, content string) error {
 	// Ouvrir le fichier en mode écriture. Si le fichier n'existe pas, créez-le.
 	// Le fichier est ouvert avec les droits en écriture seulement pour l'utilisateur.
 	dir, _ := os.Getwd()
-	file, err := os.OpenFile(dir+filename, os.O_WRONLY|os.O_CREATE, 0o600)
+	file, err := os.OpenFile(dir+filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o600)
 	if err != nil {
 		return fmt.Errorf("erreur à l'ouverture du fichier: %v", err)
 	}

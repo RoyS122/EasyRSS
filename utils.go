@@ -59,3 +59,12 @@ func removeChar(c rune, s string) (r string) {
 	}
 	return r
 }
+
+func removeFluxFromList(list []Flux, id uint) (nList []Flux) {
+	for i := range list {
+		if uint(i) != id {
+			nList = append(nList, list[i])
+		}
+	}
+	return nList
+}

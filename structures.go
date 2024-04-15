@@ -43,3 +43,9 @@ type Categorie struct {
 	Description string
 	Color       string
 }
+
+type Request struct {
+	Type string
+	Id   uint
+	Flx  Flux
+}

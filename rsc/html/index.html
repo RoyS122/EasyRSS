@@ -1,20 +1,27 @@
 <div class="containerRSSAdder">
     <script src="rsc/js/addingRSSFlux.js"></script>
+    
     <input type="text" class="inputNameAddFlux" id="InputNameRSSFeed" placeholder="Name">
     <input type="url" class="inputAddressAddFlux" id="InputAddressRSSFeed" placeholder="Adress">
     <!-- <input type="text" class="inputCategorie"> -->
-    <select name="">
+    <!-- <select name="">
         <option value='{"num_sequence":[0,1,2,3]}'>Option one</option>
         <option value='{"foo":"bar","one":"two"}'>Option two</option>
-    </select>
+    </select> -->
     <button id="send" class="buttonAddFlux" onclick=sendFormNewRSS()>Add</button>
 </div>
+
+<div class="containerCategorieAdder">
+    <script src="rsc/js/categories.js"></script>
+        
+    <input type="text" id="inputCategorieName" placeholder="Name">
+    <input type="color" id="inputCategorieColor">
+    <input type="text" id="inputCategorieDescription" placeholder="A short description">
+
+    <button id="send" class="buttonAddFlux" onclick=addCategorie()>Add</button>
+</div>
+
 <div class="containerRSSFeed">
-{{ range $i, $k := .RSSFluxArrays.listFlux }}
-    <div>
-        <a href="/viewRSS/{{$i}}">
-            {{$k.Name}}
-        </a>
-    </div>
-{{ end }}
+<script src="rsc/js/displayRSSFeeds.js"></script>
+
 </div>

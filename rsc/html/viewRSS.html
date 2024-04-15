@@ -7,10 +7,7 @@
         <a href="{{.Link}}"><b>Lien: </b>{{.Link}}</a>
         {{ if .Enclosure.URL }}
         <div>
-        <audio controls>
-            <source src="{{.Enclosure.URL}}" type="{{.Enclosure.Type}}">
-            
-            Votre navigateur ne supporte pas la balise audio.
+        <audio controls src="{{.Enclosure.URL}}" type="{{.Enclosure.Type}}" preload="metadata">
         </audio>
         </div>
         {{end}}

@@ -12,5 +12,12 @@ console.log(Addr.value, Name.value,)
             Name: Name.value,
             Link: Addr.value
         }),
+    }).then((v) => {
+        if(v.ok) {
+            displayRSSFeeds()
+        }
+        
     })
+    
 }
+
