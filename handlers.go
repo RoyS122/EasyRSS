@@ -43,11 +43,25 @@ func handleViewRSS(w http.ResponseWriter, r *http.Request) {
 		var sURL []string = Split(r.URL.String(), '/')
 		var pD PageData
 	//	fmt.Println("super mega test rss")
-		var RSSId int= Atoi(sURL[2])
+		var fID int = Atoi(sURL[2])
 	//	fmt.Println("super mega test rss", listFlux[RSSId])
-		pD.RSSData = make(map[string]*RSS)
-		pD.RSSData["currentRSS"], _ = fetchRSS(listFlux[RSSId].Link, listFlux[RSSId].Name)
-		fmt.Println(pD.RSSData["currentRSS"].Channel.Items[0])
+		switch(listFlux[fID].Version) {
+		case "1.0":
+			pD.RDFData = make(map[string]*RDF)
+			pD.RDFData["currentRDF"], _ = fetchRDF(listFlux[fID])
+		case "2.0": 
+			pD.RSSData = make(map[string]*RSS)
+			pD.RSSData["currentRSS"], _ = fetchRSS(listFlux[fID])
+		
+		}
+		
+
+		fmt.Println("su^per mega test qui tue	")
+
+		
+		fmt.Println(pD.RSSData["currentRSS"])
+		fmt.Println(pD.RDFData["currentRDF"])
+		fmt.Println("su^per mega test qui tue	2")
 		createResponse(w, "rsc/html/viewRSS.html", pD)
 	default:
 		errorHandler(w, r, http.StatusBadRequest)

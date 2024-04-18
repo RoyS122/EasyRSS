@@ -1,3 +1,5 @@
+
+{{if .RSSData.currentRSS}}
 <h1>{{.RSSData.currentRSS.Channel.Title}}</h1>
 <p>Description: {{.RSSData.currentRSS.Channel.Description}}</p>
 {{range .RSSData.currentRSS.Channel.Items}}
@@ -13,4 +15,22 @@
         {{end}}
         <p><i>{{.PubDate}}</i></p>
     </div>
+{{end}}
+{{else}}
+<h1>{{.RDFData.currentRDF.Channel.Title}}</h1>
+<p>Description: {{.RSSData.currentRSS.Channel.Description}}</p>
+{{range .RSSData.currentRSS.Channel.Items}}
+    <div>
+        <h3>{{.Title}}</h3>
+        <p><b>Description: </b> {{.Description}}</p>
+        <a href="{{.Link}}"><b>Lien: </b>{{.Link}}</a>
+        {{ if .Enclosure.URL }}
+        <div>
+        <audio controls src="{{.Enclosure.URL}}" type="{{.Enclosure.Type}}" preload="metadata">
+        </audio>
+        </div>
+        {{end}}
+        <p><i>{{.PubDate}}</i></p>
+    </div>
+{{end}}
 {{end}}

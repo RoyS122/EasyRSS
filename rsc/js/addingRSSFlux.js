@@ -2,7 +2,8 @@ function sendFormNewRSS() {
     
     var Addr = document.getElementById("InputAddressRSSFeed")
     var Name = document.getElementById("InputNameRSSFeed")
-console.log(Addr.value, Name.value,)
+    var Vers = document.getElementById("InputVersionRSSFeed")
+console.log(Addr.value, Name.value, Vers.value) 
     fetch("/addRSS", {
         method: 'POST',
         headers: {
@@ -10,7 +11,8 @@ console.log(Addr.value, Name.value,)
         },
         body: JSON.stringify({
             Name: Name.value,
-            Link: Addr.value
+            Link: Addr.value,
+            Version: Vers.value
         }),
     }).then((v) => {
         if(v.ok) {
