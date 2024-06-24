@@ -1,6 +1,16 @@
-package main
+package server
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"net/http"
+)
+
+type User struct {
+	Id string
+	Username string 
+	Email string
+	SubList []Flux
+}
 
 type PageData struct {
 	RSSFluxArrays map[string][]Flux
@@ -74,4 +84,14 @@ type RDFItem struct {
 	Link        string `xml:"link"`
 	Date        string `xml:"date"`
 	Creator     string `xml:"creator"`
+}
+
+type Handler func(http.ResponseWriter, *http.Request)
+
+type HandlersMap map[string]Handler
+
+func (hm HandlersMap)Root() {
+	for i, k := range hm {
+		http.HandleFunc(i, k)
+	}
 }

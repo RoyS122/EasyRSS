@@ -16,7 +16,8 @@ async function displayRSSFeeds() {
         
         r.forEach((flux, i) => {
             let fContainer = document.createElement("div")
-            fContainer.className = "containerRSSFlux"
+            fContainer.className = "card"
+            fContainer.id = "containerRSSFlux"
             let fLink = document.createElement("a")
             let delButton = document.createElement("button")
             delButton.onclick = () => {removeRSS(i)}

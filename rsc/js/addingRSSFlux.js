@@ -1,9 +1,10 @@
 function sendFormNewRSS() {
     
-    var Addr = document.getElementById("InputAddressRSSFeed")
-    var Name = document.getElementById("InputNameRSSFeed")
-    var Vers = document.getElementById("InputVersionRSSFeed")
-console.log(Addr.value, Name.value, Vers.value) 
+    let Addr = document.getElementById("InputAddressRSSFeed")
+    let Name = document.getElementById("InputNameRSSFeed")
+    let Vers = document.getElementById("InputVersionRSSFeed")
+
+
     fetch("/addRSS", {
         method: 'POST',
         headers: {

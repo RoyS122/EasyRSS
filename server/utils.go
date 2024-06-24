@@ -1,4 +1,4 @@
-package main
+package server
 
 func Split(s string, sep rune) (res []string) {
 	var word string

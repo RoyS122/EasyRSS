@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"fmt"
@@ -6,17 +6,15 @@ import (
 	"os"
 )
 
-
-
-
-func main() {
-    handlers_map := map[string]func(http.ResponseWriter, *http.Request){
-		"/": handleHome, 	
-        "/viewRSS/": handleViewRSS,
-        "/addRSS": handleAddRSS,
-		"/addCategorie": handleAddCategorie,
+func RunServer() {
+	
+	serviceRoutes := HandlersMap{
+		"/":               handleHome,
+		"/viewRSS/":       handleViewRSS,
+		"/addRSS":         handleAddRSS,
+		"/addCategorie":   handleAddCategorie,
 		"/getAllRSSFeeds": handlegetAllRSSFeeds,
-		"/deleteRSSFeed": handleDeleteRSSFeed,
+		"/deleteRSSFeed":  handleDeleteRSSFeed,
 	}
 
 	dir, _ := os.Getwd()
@@ -24,15 +22,13 @@ func main() {
 	fs := http.FileServer(http.Dir(dir)) // setup the directory of files
 	fmt.Println("test")
 
-	for i, k := range handlers_map {
-		fmt.Println(i)
-		http.HandleFunc(i, k)
-	}
-
+	serviceRoutes.Root()
+	
 	http.Handle("/rsc/", fs)
-
+	Init_db()
 	
 	fmt.Println("Server running on: http://localhost:" + PORT)
+	
 	http.ListenAndServe(":"+PORT, nil)
 	fmt.Println("test2")
 }

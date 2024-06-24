@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"encoding/json"
@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"text/template"
 )
+
 
 func createResponse(w http.ResponseWriter, templatePath string, data PageData) {
 	t, err := template.ParseFiles(templatePath)
