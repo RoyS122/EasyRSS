@@ -19,6 +19,7 @@ type PageData struct {
 	StringArrays  map[string][]string
 	IntArrays     map[string][]int
 	RSSVersion 		bool
+	Errors			[]string
 	//	Uint16Arrays map[string][]uint16
 }
 
@@ -94,4 +95,8 @@ func (hm HandlersMap)Root() {
 	for i, k := range hm {
 		http.HandleFunc(i, k)
 	}
+}
+
+type ReqLogin struct {
+
 }

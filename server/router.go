@@ -15,6 +15,8 @@ func RunServer() {
 		"/addCategorie":   handleAddCategorie,
 		"/getAllRSSFeeds": handlegetAllRSSFeeds,
 		"/deleteRSSFeed":  handleDeleteRSSFeed,
+		"/login": handleLogin,
+		"/register": handleRegister,
 	}
 
 	dir, _ := os.Getwd()

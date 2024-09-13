@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"text/template"
+
+	"github.com/gofrs/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 
@@ -21,9 +24,14 @@ func createResponse(w http.ResponseWriter, templatePath string, data PageData) {
 func handleHome(w http.ResponseWriter, r *http.Request) {
 	switch(r.Method){
 	case "GET":
-		var listFlux []Flux = getFluxFromJson( "/rsc/json/fluxlist.json")
+
+
+		//var listFlux []Flux = getFluxFromJson( "/rsc/json/fluxlist.json")
 		//fmt.Println(dir + "rsc/json/fluxlist.json")
 		var pD  PageData
+		var cUser User = GetUserInformationsByCookies(r.Cookies());
+
+		var listFlux []Flux = cUser.GetFlux();
 		fmt.Println("test")
 		pD.RSSFluxArrays = make(map[string][]Flux)
 		pD.RSSFluxArrays["listFlux"] = listFlux
@@ -40,7 +48,9 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 func handleViewRSS(w http.ResponseWriter, r *http.Request) {
 	switch(r.Method) {
 	case "GET":
-		var listFlux = getFluxFromJson("/rsc/json/fluxlist.json")
+		var u User = GetUserInformationsByCookies(r.Cookies()) 
+		var listFlux = u.GetFlux()
+
 		var sURL []string = Split(r.URL.String(), '/')
 		var pD PageData
 	//	fmt.Println("super mega test rss")
@@ -53,7 +63,9 @@ func handleViewRSS(w http.ResponseWriter, r *http.Request) {
 		case "2.0": 
 			pD.RSSData = make(map[string]*RSS)
 			pD.RSSData["currentRSS"], _ = fetchRSS(listFlux[fID])
-		
+		default:
+			pD.RSSData = make(map[string]*RSS)
+			pD.RSSData["currentRSS"], _ = fetchRSS(listFlux[fID])
 		}
 		
 
@@ -73,21 +85,19 @@ func handleAddRSS(w http.ResponseWriter, r *http.Request) {
 	
 	switch(r.Method) {
 	case "POST":
-	
+		var u User = GetUserInformationsByCookies(r.Cookies()) 
+
+		if u.Username == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			return;
+		}
 		var nRSS Flux
 		err := json.NewDecoder(r.Body).Decode(&nRSS)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		var lFlux []Flux = getFluxFromJson("/rsc/json/fluxlist.json")
-		lFlux = append(lFlux, nRSS)
-		nString, _ := json.Marshal(lFlux)
-		err = writeFile("/rsc/json/fluxlist.json", string(nString))
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		u.AddFlux(nRSS)
 		w.WriteHeader(http.StatusOK)
 	}
 }
@@ -117,8 +127,9 @@ func handleAddCategorie(w http.ResponseWriter, r *http.Request) {
 func handlegetAllRSSFeeds(w http.ResponseWriter, r *http.Request) {
 	switch(r.Method) {
 	case "GET":
-
-		fList := getFluxFromJson("/rsc/json/fluxlist.json") 
+		var u User = GetUserInformationsByCookies(r.Cookies()) 
+	
+		fList := u.GetFlux()
 		
 		nText, _ := json.Marshal(fList)
 		w.Header().Set("Content-Type", "application/json")
@@ -159,4 +170,99 @@ func handleDeleteRSSFeed(w http.ResponseWriter, r *http.Request) {
 	default: 
 		errorHandler(w, r, http.StatusBadRequest)
 	}
+}
+
+func handleRegister(w http.ResponseWriter, r *http.Request) {
+	var pD PageData
+	switch (r.Method) {
+	case "GET":
+		createResponse(w, "rsc/html/login_register.html", pD)
+	case "POST":
+		//	fmt.Println("test2")
+		var (
+			_username              string = r.FormValue("username")
+			_email                 string = r.FormValue("email")
+			_password              string = r.FormValue("password")
+			_password_confirmation string = r.FormValue("password_confirmation")
+		)
+
+		for _, v := range r.Form {
+			for _, val := range v {
+				if CheckIsEmpty(val) {
+					pD.Errors = append(pD.Errors, "Empty value")
+				}
+			}
+		}
+		// fmt.Println(_username, _email, _password, _password_confirmation)
+		if _password != _password_confirmation {
+			pD.Errors = append(pD.Errors, "Not same password")
+		}
+
+		
+		
+
+		var _user User = User{
+			Username: _username,
+			Email:    _email,
+		}
+		var check_user [2]bool = checkUserExists(_user)
+		if check_user[0] {
+			pD.Errors = append(pD.Errors, "username already taken")
+		}
+		if check_user[1] {
+			pD.Errors = append(pD.Errors, "email already taken")
+		}
+
+		if len(pD.Errors) != 0  {
+			createResponse(w, "rsc/html/login_register.html", pD)
+			return;
+		}
+
+		id, _ := uuid.NewV4()
+		
+		_user.Id = id.String();
+
+		pswd, _ := bcrypt.GenerateFromPassword([]byte(_password), 6)
+		_user.Register(string(pswd))
+		var conn_cookie http.Cookie = _user.createConnexionCookies()
+		http.SetCookie(w, &conn_cookie)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		//handleIndex(w, r)
+		return
+	default:
+		// Display error
+	} 
+}
+
+
+func handleLogin(w http.ResponseWriter, r *http.Request) {
+	var pD PageData
+	switch (r.Method) {
+	case "GET":
+		createResponse(w, "rsc/html/login_register.html", pD)
+	case "POST":
+	//	fmt.Println("y test")
+		var (
+			_email    string = r.FormValue("email")
+			_password string = r.FormValue("password")
+		)
+		var _user User = getUserByMail(_email)
+		err, sess := _user.login(_password)
+		
+		if err != "" {
+			pD.Errors = append(pD.Errors, err)
+		}
+			
+		if len(pD.Errors) != 0 {
+			createResponse(w, "rsc/html/login_register.html", pD)
+			return
+		}
+		
+		http.SetCookie(w, &sess)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		//handleIndex(w, r)
+		return
+	default:
+		// Display error
+	} 
 }

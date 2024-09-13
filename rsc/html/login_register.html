@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<head>
+<link rel="stylesheet" href="rsc/bootstrap/css/bootstrap.css"></link>
+<script src="rsc/bootstrap/js/bootstrap.js"></script>
+</head>
+
+<form method="post" action="/login">
+    <div id="fade-box">
+      <input
+        type="text"
+        name="email"
+        id="email"
+        placeholder="Email"
+        required
+      />
+      <input name="password" id="password" type="password" placeholder="Password" required />
+      <button>Log In</button>
+      <p><b>Not Registered Yet? </b><a href="/register">Click here</a></p>
+    </div>
+  </form>
+
+
+  <form method="post" action="/register">
+    <div id="fade-box">
+      <input
+        type="text"
+        name="username"
+        id="username"
+        placeholder="Username"
+        required
+      />
+      <input
+        type="text"
+        placeholder="Email"
+        name="email"
+        id="email"
+        required
+      />
+      <input type="password" placeholder="Password" name="password" id="password" required />
+
+      <input
+        type="password"
+        placeholder="Confirm password"
+        id="password_confirmation"
+        name="password_confirmation"
+        required
+      />
+      <button>Register</button>
+      <p><b>Already have an account? </b><a href="/login">Click here</a></p>
+    </div>
+  </form>

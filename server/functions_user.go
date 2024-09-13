@@ -19,11 +19,11 @@ func getUserBySessionId(session_id string) (u User) {
 	var _exp_date string
 	err := db.QueryRow("SELECT user_id, username, email, session_expiration FROM users WHERE users.session_id = ?", session_id).Scan(&u.Id, &u.Username, &u.Email, &_exp_date)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err, "erreur recuperation exp date")
 	}
 	_exp_date_time, err := time.Parse(TIME_LAYOUT, _exp_date)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err, "erreur formatage de la date non recuperée dans la db")
 		return User{}
 	}
 	if _exp_date_time.Before(time.Now()) {
@@ -42,12 +42,13 @@ func (u User) Register(password string) {
 	var st string = `INSERT INTO users(user_id, username, password, email, date) VALUES (?, ?, ?, ?, ?)`
 	req, err := db.Prepare(st)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err, "ERREUR HERE")
 		return
 	}
 	passwordHash, _ :=  bcrypt.GenerateFromPassword([]byte(password), 10)
-	id, _ := uuid.NewV4() 
-	req.Exec(id, u.Username, string(passwordHash), u.Email, time.Now().Format(TIME_LAYOUT))
+	
+	req.Exec(u.Id, u.Username, string(passwordHash), u.Email, time.Now().Format(TIME_LAYOUT))
+
 }
 
 func checkUserExists(u User) (res [2]bool) {
@@ -80,21 +81,27 @@ func (u User) createConnexionCookies() (cookie http.Cookie) {
 
 	db := Open_DB()
 	defer db.Close()
-
+	
 	var st string = `UPDATE users SET session_id = ?, session_expiration = ? WHERE user_id = ?`
 	req, err := db.Prepare(st)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err, "ERREUR LA FRRR")
 		return
 	}
 	_expirationdate := time.Now().Add(time.Hour * 24)
-	req.Exec(_uuid, _expirationdate.Format(TIME_LAYOUT), u.Id)
+	_, err = req.Exec(_uuid.String(), _expirationdate.Format(TIME_LAYOUT), u.Id)
+	if err != nil {
+		fmt.Println(err, "ERREUR LA FRRR")
+		return
+	}
+
+	fmt.Println(_uuid, _expirationdate.Format(TIME_LAYOUT), u)
 	cookie = http.Cookie{
 		Name:    "sessionID",
 		Value:   _uuid.String(),
 		Expires: _expirationdate,
 	}
-	return
+	return cookie
 }
 
 func (u User) logout() {
@@ -104,57 +111,64 @@ func (u User) logout() {
 }
 
 
-// func login(req ReqLogin) (err_ret string, session http.Cookie) {
-// 	db := Open_DB()
-// 	defer db.Close()
+func (u User) GetFlux() (list_flux []Flux) {
+	
+	db := Open_DB();
+	defer db.Close();
+	var req string = `SELECT url, name FROM rss_subscriptions WHERE sub_id == ?`;
+	rows, _ := db.Query(req, u.Id);
 
-// 	var _pass string
+	for rows.Next() {
+		var lFlux Flux;
+		rows.Scan(&lFlux.Link, &lFlux.Name)
+		list_flux = append(list_flux, lFlux);
+	}
+	return list_flux;
+}
 
-// 	var u User
-// 	getEmail := false
+func (u User) AddFlux(f Flux) {
+	
+	db := Open_DB();
+	defer db.Close();
+	var req string = `INSERT INTO rss_subscriptions(sub_id, url, name) VALUES (?, ?, ?)`;
+	db.Exec(req, u.Id, f.Link, f.Name);
+	
+	
+}
 
-// 	for _, v := range req.EmailOrUsername {
-// 		if v == '@' {
-// 			getEmail = true
-// 			break
-// 		}
-// 	}
+func (u User) login(password string) (err_ret string, session http.Cookie) {
+	//fmt.Println("test log")
+	var _pass string
+	db := Open_DB()
+	defer db.Close()
+	err := db.QueryRow("SELECT password FROM users WHERE users.user_id = ?", u.Id).Scan(&_pass)
+	if err != nil {
+		return "error wrong mail", session
+	}
+//	fmt.Println(_pass)
+	err = bcrypt.CompareHashAndPassword([]byte(_pass), []byte(password))
+	if err != nil {
+		return "error wrong password", session
+	}
+	session = u.createConnexionCookies()
+	return err_ret, session
+}
+func getUserByMail(mail string) (u User) {
+	db := Open_DB()
+	defer db.Close()
+	err := db.QueryRow("SELECT user_id, username FROM users WHERE users.email = ?", mail).Scan(&u.Id, &u.Username)
+	if err != nil {
+	//	fmt.Println(err)
+	}
+	return u
+}
 
-// 	if getEmail {
-// 		u = getUserByMail(req.EmailOrUsername)
-// 	} else {
-// 		u = getUserByUsername(req.EmailOrUsername)
-// 	}
-
-// 	err := db.QueryRow("SELECT password FROM users WHERE users.user_id = ?", u.Id).Scan(&_pass)
-// 	if err != nil {
-// 		return "", session
-// 	}
-
-// 	err = bcrypt.CompareHashAndPassword([]byte(_pass), []byte(req.Password))
-// 	if err != nil {
-// 		return "", session
-// 	}
-// 	session = u.createConnexionCookies()
-// 	return err_ret, session
-// }
-
-// func getUserByMail(mail string) (u User) {
-// 	db := Open_DB()
-// 	defer db.Close()
-// 	err := db.QueryRow("SELECT user_id, username FROM users WHERE users.email = ?", mail).Scan(&u.Id, &u.Username)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
-// 	return u
-// }
-
-// func getUserByUsername(username string) (u User) {
-// 	db := Open_DB()
-// 	defer db.Close()
-// 	err := db.QueryRow("SELECT user_id, email FROM users WHERE users.username = ?", username).Scan(&u.Id, &u.Email)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
-// 	return u
-// }
+func getUserByUsername(username string) (u User) {
+	db := Open_DB()
+	defer db.Close()
+	err := db.QueryRow("SELECT user_id, email FROM users WHERE users.username = ?", username).Scan(&u.Id, &u.Email)
+	if err != nil {
+	//	fmt.Println(err)
+	}
+	return u
+}

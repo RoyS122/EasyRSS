@@ -38,7 +38,7 @@ func Init_db() {
 	);
 	`, `
 	CREATE TABLE IF NOT EXISTS rss_subscriptions (
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		sub_id,
 		url TEXT,
 		name TEXT,
