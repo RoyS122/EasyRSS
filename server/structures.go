@@ -38,6 +38,13 @@ type Channel struct {
 	Link        string `xml:"link"`
 	Description string `xml:"description"`
 	Items       []Item `xml:"item"`
+	Cover		Image `xml:"image"`
+}
+
+type Image struct {
+	Url string `xml:"url"`
+	Title string `xml:"title"`
+	Link string `xml:"link"`
 }
 
 type Item struct {

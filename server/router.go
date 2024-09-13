@@ -12,9 +12,9 @@ func RunServer() {
 		"/":               handleHome,
 		"/viewRSS/":       handleViewRSS,
 		"/addRSS":         handleAddRSS,
-		"/addCategorie":   handleAddCategorie,
+		// "/addCategorie":   handleAddCategorie,
 		"/getAllRSSFeeds": handlegetAllRSSFeeds,
-		"/deleteRSSFeed":  handleDeleteRSSFeed,
+		// "/deleteRSSFeed":  handleDeleteRSSFeed,
 		"/login": handleLogin,
 		"/register": handleRegister,
 	}

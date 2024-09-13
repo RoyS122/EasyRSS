@@ -1,0 +1,116 @@
+
+html,
+body,
+.view {
+    height: 100%;
+  }
+  
+  #mobile-box {
+    width: 200px;
+    position: fixed;  /* Le mobile box est fixé */
+    bottom: 20px;     /* Espace par rapport au bas de l'écran */
+    right: 20px;      /* Espace par rapport à la droite de l'écran */
+    z-index: 1000;    /* S'assure que le mobile-box est toujours devant */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Optionnel : ombre pour le style */
+  }
+  
+  .card {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
+  
+  .card .view {
+    -webkit-border-top-left-radius: 10px;
+    border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  
+  .card h5 a {
+    color: #0d47a1;
+  }
+  
+  .card h5 a:hover {
+    color: #072f6b;
+  }
+  
+  #pButton {
+    float: left;
+    margin-top: 12px;
+    cursor: pointer;
+  }
+  
+  #timeline {
+    width: 90%;
+    height: 2px;
+    margin-top: 20px;
+    margin-left: 10px;
+    float: left;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.3);
+  }
+  
+  #playhead {
+    width: 8px;
+    height: 8px;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    margin-top: -3px;
+    background: black;
+    cursor: pointer;
+  }
+  
+
+  #audioplayer {
+    position: relative;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#timeline {
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+}
+
+#playhead {
+    width: 8px;
+    height: 8px;
+    background: black;
+    border-radius: 50%;
+    position: absolute;
+    top: -2px;
+    cursor: pointer;
+}
+
+.control-button {
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.play-button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.play-button:hover {
+    background-color: #0056b3;
+}
+
+.description {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+            line-clamp: 2; 
+    -webkit-box-orient: vertical;
+ }

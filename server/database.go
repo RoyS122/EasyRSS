@@ -38,7 +38,6 @@ func Init_db() {
 	);
 	`, `
 	CREATE TABLE IF NOT EXISTS rss_subscriptions (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		sub_id,
 		url TEXT,
 		name TEXT,
@@ -51,6 +50,13 @@ func Init_db() {
 		title TEXT,
 		FOREIGN KEY(sub_id) REFERENCES users(user_id)
 		FOREIGN KEY(subscription_id) REFERENCES rss_subscriptions(id)
+	);
+	`,`
+	CREATE TABLE IF NOT EXISTS listeningdata (
+		podcast_id, 
+		episode INTEGER,
+		duration INTEGER,
+		FOREIGN KEY(podcast_id) REFERENCES rss_subscriptions(id)
 	);
 	`,
 	}

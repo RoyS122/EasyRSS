@@ -22,7 +22,7 @@ func fetchRDF(flux Flux) (*RDF, error) {
 		return nil, err
 	}
 	// fmt.Println("2")
-	fmt.Println(string(body))
+	//fmt.Println(string(body))
 	// Analyser le corps XML dans la structure RSS
 	var rdf RDF 
 	
@@ -53,7 +53,7 @@ func fetchRSS(flux Flux) (*RSS, error) {
 		return nil, err
 	}
 	// fmt.Println("2")
-	fmt.Println(string(body))
+//	fmt.Println(string(body))
 	// Analyser le corps XML dans la structure RSS
 	var rss RSS = RSS{Name: flux.Name}
 	
@@ -61,6 +61,7 @@ func fetchRSS(flux Flux) (*RSS, error) {
 
 
 	if err != nil {
+		fmt.Println(err, "mega erreur HEEEERRREEEE")
 		return nil, err
 	}
 	// fmt.Println("3")
